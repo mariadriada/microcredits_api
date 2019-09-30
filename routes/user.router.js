@@ -7,10 +7,13 @@ userRouter
     // Get all users
     .get('/', userCtr.getAllUsers)
     // Create an user
-    .post('/create', userCtr.createUser)
+    .post('/create', userCtr.find, userCtr.createUser)
     // Drop an user
-    .delete('/delete', userCtr.deleteUser)
+    .delete('/delete/:_id', userCtr.deleteUser)
     // update the user
-    .put('/update', userCtr.updateUser)
+    .put('/update/:_id', userCtr.updateUser)
+    // TEST
+    .put('/test/:_id/:atribbute/:value')
+
 
 module.exports = userRouter
