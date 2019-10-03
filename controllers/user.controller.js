@@ -1,6 +1,8 @@
-let mongoose = require("mongoose")
-let User = require("../models/user.model")
-let DB = require("../config/database")
+const mongoose = require("mongoose")
+const User = require("../models/user.model")
+const DB = require("../config/database")
+const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
 
 // Get all users
 const getAllUsers = async (req, res) => {
@@ -16,6 +18,36 @@ const getAllUsers = async (req, res) => {
     })
 
     // Close DB
+    DB.disconnect()
+}
+
+// Login
+const login = async (req, res) => {
+
+    DB.connect()
+
+    // Validate user
+    await User.findOne({"email": req.body.email})
+    .then( async (response)=>{
+        // Compare clave with hash
+        await bcrypt.compare(req.body.clave.trim(), response.clave)
+        .then((status)=>{
+            // if status is true, generate token
+            if(status){
+                jwt.sign({"email":req.body.email}, response.clave, 
+                (error, token) =>{
+                  res.send({"token": token})
+                })
+            }
+        })
+        .catch((error)=>{
+            console.log("Incorrect user", error)
+        })
+    })
+    .catch((error)=>{
+        console.log("Error", error)
+    })
+
     DB.disconnect()
 }
 
@@ -44,6 +76,13 @@ const find = (req, res, next) => {
     })
 }
 
+// generate hash to user key
+const generateHash = async (req, res, next) => {
+    await bcrypt.hash(req.body.clave, 10).then((hash)=>{
+        req.body.clave = hash
+        next()
+    })
+}
 
 // Create an user
 const createUser = async (req, res) => {
@@ -120,5 +159,7 @@ module.exports = {
     createUser,
     deleteUser,
     updateUser,
-    find
+    find,
+    login,
+    generateHash
 }

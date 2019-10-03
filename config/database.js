@@ -2,7 +2,7 @@ let mongoose = require("mongoose")
 const { DB_CONNECTION } = require("../config/config")
 
 module.exports = {
-    // varriable to indicate the connection status
+    // variable to indicate the connection status
     connection: false,
 
     // Function to do connect
@@ -13,7 +13,7 @@ module.exports = {
         // Connect to bd
         mongoose.connect(DB_CONNECTION)
         .then((connection)=>{
-            console.log("CONECTION", connection)
+            console.log("CONECTION")
         })
         .catch((error)=>{
             console.log("ERROR:", error)
