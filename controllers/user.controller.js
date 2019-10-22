@@ -33,10 +33,14 @@ const login = async (req, res) => {
         await bcrypt.compare(req.body.clave.trim(), response.clave)
         .then((status)=>{
             // if status is true, generate token
-            if(status){
+
+            if(status){    
                 jwt.sign({"email":req.body.email}, response.clave, 
                 (error, token) =>{
-                  res.send({"token": token})
+                    console.log("SESSION****************", req.session)
+                    // Send a cookie
+                    res.cookie("token", token)
+                    res.status(200).send({"token": token})
                 })
             }
         })

@@ -2,10 +2,18 @@ let express = require("express")
 let bodyParser = require("body-parser")
 let userRouter = require("./routes/user.router")
 let creditRouter = require("./routes/credit.router")
+const cookieParser = require("cookie-parser")
+const cookieSession = require("cookie-session")
 
 let app = express()
 // Receive information in JSON format 
 app.use(bodyParser.json())
+// Activate use of cookies
+app.use(cookieParser())
+// Activate use of cookie sessions
+app.use(cookieSession({
+    secret: "aleatorio"
+}))
 
 // Config main route to server
 app.get("/", (req,res)=>{
